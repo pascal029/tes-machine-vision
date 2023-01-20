@@ -83,8 +83,8 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "User",
     }
   );
-  return User;
   User.beforeCreate((user, opt) => {
     user.password = encrypt(user.password);
   });
+  return User;
 };

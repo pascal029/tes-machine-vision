@@ -1,3 +1,5 @@
+const { compare } = require("../helpers/bcrypt");
+const { sign } = require("../helpers/jwt");
 const { User } = require("../models");
 
 class UserAuthController {
@@ -28,8 +30,35 @@ class UserAuthController {
       next(error);
     }
   }
-  static async login(req, res, next) {}
-  static async logout(req, res, next) {}
+  static async login(req, res, next) {
+    try {
+      const { username, password } = req.body;
+
+      if (!username || !password) throw { name: "invalid_data" };
+
+      const userLoggedin = await User.findOne({ where: { username } });
+
+      if (!userLoggedin) throw { name: `not_found` };
+
+      const isValidPassword = compare(password, userLoggedin.password);
+      if (!isValidPassword) throw { name: `invalid_password` };
+
+      res.status(200).json({
+        success: true,
+        message: "Successfully logged in",
+        data: {
+          token: sign({ id: userLoggedin }),
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async logout(req, res, next) {
+    try {
+    } catch (error) {}
+  }
 }
 
 module.exports = UserAuthController;
