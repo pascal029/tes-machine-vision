@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+const { encrypt } = require("../helpers/bcrypt");
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -29,6 +30,9 @@ module.exports = (sequelize, DataTypes) => {
       username: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: {
+          msg: `Duplicate Username`,
+        },
         validate: {
           notNull: {
             msg: `User name can't be empty`,
@@ -42,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
         unique: {
-          msg: `Email already registered`,
+          msg: `Duplicate Email`,
         },
         validate: {
           notNull: {
@@ -50,6 +54,9 @@ module.exports = (sequelize, DataTypes) => {
           },
           notEmpty: {
             msg: `Email can't be empty`,
+          },
+          isEmail: {
+            msg: `You have entered invalid email address`,
           },
         },
       },
@@ -77,4 +84,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   return User;
+  User.beforeCreate((user, opt) => {
+    user.password = encrypt(user.password);
+  });
 };
