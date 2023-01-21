@@ -178,6 +178,41 @@ class PostController {
   }
   static async getListByUserId(req, res, next) {
     try {
+      const { id } = req.params;
+      const { page, limit, searchBy, search } = req.query;
+      let options = {
+        where: {
+          userId: id,
+        },
+        limit,
+        offset: (page - 1) * limit,
+        include: [
+          {
+            model: User,
+            as: "user",
+            attributes: ["name", "username", "email", "photo"],
+          },
+        ],
+      };
+      if (searchBy && search) {
+        options.where[`${searchBy}`] = {
+          [Op.iLike]: search,
+        };
+      }
+
+      const listPost = await Post.findAndCountAll(options);
+      const pagination = {
+        total: listPost.rows.length,
+        page: +page,
+        limit: +limit,
+      };
+
+      res.status(200).json({
+        success: true,
+        message: "Successfully Get Post",
+        data: listPost.rows,
+        pagination,
+      });
     } catch (error) {
       next(error);
     }
