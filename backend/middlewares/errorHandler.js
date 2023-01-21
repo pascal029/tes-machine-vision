@@ -26,6 +26,15 @@ const errorHandler = (err, req, res, next) => {
   } else if (err.name == `invalid_token`) {
     code = 401;
     message = `Invalid Token`;
+  } else if (err.name == "not_found") {
+    code = 404;
+    message = "Data not found";
+  } else if (err.name == "password_not_match") {
+    code = 400;
+    message = "Password not match";
+  } else if (err.name == "wrong_password") {
+    code = 400;
+    message = "Password not found";
   }
   res.status(code).json({ success: false, message, data: null });
 };
