@@ -43,7 +43,25 @@ class PostController {
       next(error);
     }
   }
-  static async deletePost(req, res, next) {}
+  static async deletePost(req, res, next) {
+    try {
+      const { id } = req.params;
+      const post = await Post.findByPk(id);
+      if (!post) throw { name: "data_not_found" };
+
+      await Post.destroy({ where: { id } });
+
+      res
+        .status(200)
+        .json({
+          success: true,
+          message: "Successfully Delete post",
+          data: null,
+        });
+    } catch (error) {
+      next(error);
+    }
+  }
   static async likePost(req, res, next) {}
   static async unlikePost(req, res, next) {}
   static async getList(req, res, next) {}
