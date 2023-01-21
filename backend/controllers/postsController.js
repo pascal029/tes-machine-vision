@@ -1,4 +1,4 @@
-const { Post, User } = require("../models");
+const { Post, User, sequelize, UserLiked } = require("../models");
 
 class PostController {
   static async createPost(req, res, next) {
@@ -51,19 +51,69 @@ class PostController {
 
       await Post.destroy({ where: { id } });
 
-      res
-        .status(200)
-        .json({
-          success: true,
-          message: "Successfully Delete post",
-          data: null,
-        });
+      res.status(200).json({
+        success: true,
+        message: "Successfully Delete post",
+        data: null,
+      });
     } catch (error) {
       next(error);
     }
   }
-  static async likePost(req, res, next) {}
-  static async unlikePost(req, res, next) {}
+  static async likePost(req, res, next) {
+    const t = await sequelize.transaction();
+    try {
+      const userId = req.user.id;
+      const { id } = req.params;
+
+      const post = await Post.findByPk(id);
+      if (!post) throw { name: "data_not_found" };
+      await Post.increment({ likes: 1 }, { where: { id } }, { transaction: t });
+
+      await UserLiked.create({ postId: post.id, userId }, { transaction: t });
+
+      t.commit();
+      res.status(200).json({
+        success: true,
+        message: "Successfully Liked Post",
+        data: null,
+      });
+    } catch (error) {
+      t.rollback();
+      next(error);
+    }
+  }
+  static async unlikePost(req, res, next) {
+    const t = await sequelize.transaction();
+    try {
+      const userId = req.user.id;
+      const { id } = req.params;
+
+      const post = await Post.findByPk(id);
+      console.log(post);
+      if (!post) throw { name: "data_not_found" };
+      await Post.increment(
+        { likes: -1 },
+        { where: { id } },
+        { transaction: t }
+      );
+
+      await UserLiked.destroy(
+        { where: { postId: post.id, userId } },
+        { transaction: t }
+      );
+
+      t.commit();
+      res.status(200).json({
+        success: true,
+        message: "Successfully Unlike Post",
+        data: null,
+      });
+    } catch (error) {
+      t.rollback();
+      next(error);
+    }
+  }
   static async getList(req, res, next) {}
   static async getListById(req, res, next) {}
   static async getListByUserId(req, res, next) {}
