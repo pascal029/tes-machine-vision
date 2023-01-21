@@ -23,7 +23,7 @@ const errorHandler = (err, req, res, next) => {
   } else if (err.name == "TokenExpiredError") {
     code = 401;
     message = `Expired Token`;
-  } else if (err.name == `JsonWebTokenError`) {
+  } else if (err.name == `invalid_token`) {
     code = 401;
     message = `Invalid Token`;
   }

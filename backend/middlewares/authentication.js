@@ -1,6 +1,6 @@
 const { verify } = require("../helpers/jwt");
-
-const authentication = (req, res, next) => {
+const { User } = require("../models");
+const authentication = async (req, res, next) => {
   try {
     const { authorization } = req.headers;
 
@@ -12,8 +12,11 @@ const authentication = (req, res, next) => {
     if (isValidToken.name == "JsonWebTokenError") {
       throw { name: "JsonWebTokenError" };
     } else if (isValidToken.name == "TokenExpiredError") {
-      throw { name: "TokenExpiredError" };
+      throw { name: "invalid_token" };
     }
+
+    const user = await User.findByPk(id);
+    if (!user) throw { name: "invalid_token" };
     req.user = {
       id: isValidToken.id,
     };
