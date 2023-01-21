@@ -17,6 +17,15 @@ const errorHandler = (err, req, res, next) => {
   } else if (err.name == `invalid_password`) {
     code = 400;
     message = `Invalid Password`;
+  } else if (err.name == `no_auth`) {
+    code = 401;
+    message = `No auth token`;
+  } else if (err.name == "TokenExpiredError") {
+    code = 401;
+    message = `Expired Token`;
+  } else if (err.name == `JsonWebTokenError`) {
+    code = 401;
+    message = `Invalid Token`;
   }
   res.status(code).json({ success: false, message, data: null });
 };

@@ -47,7 +47,7 @@ class UserAuthController {
         success: true,
         message: "Successfully logged in",
         data: {
-          token: sign({ id: userLoggedin }),
+          token: sign({ id: userLoggedin.id }),
         },
       });
     } catch (error) {
@@ -57,7 +57,12 @@ class UserAuthController {
 
   static async logout(req, res, next) {
     try {
-    } catch (error) {}
+      res
+        .status(200)
+        .json({ success: true, message: "Successfully logout", data: null });
+    } catch (error) {
+      next(error);
+    }
   }
 }
 
