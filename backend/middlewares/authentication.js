@@ -10,12 +10,12 @@ const authentication = async (req, res, next) => {
 
     const isValidToken = verify(token);
     if (isValidToken.name == "JsonWebTokenError") {
-      throw { name: "JsonWebTokenError" };
-    } else if (isValidToken.name == "TokenExpiredError") {
       throw { name: "invalid_token" };
+    } else if (isValidToken.name == "TokenExpiredError") {
+      throw { name: "TokenExpiredError" };
     }
 
-    const user = await User.findByPk(id);
+    const user = await User.findByPk(isValidToken.id);
     if (!user) throw { name: "invalid_token" };
     req.user = {
       id: isValidToken.id,
