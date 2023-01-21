@@ -35,6 +35,9 @@ const errorHandler = (err, req, res, next) => {
   } else if (err.name == "wrong_password") {
     code = 400;
     message = "Password not found";
+  } else if (err.name == "data_not_found") {
+    code = 400;
+    message = "Data not found";
   }
   res.status(code).json({ success: false, message, data: null });
 };

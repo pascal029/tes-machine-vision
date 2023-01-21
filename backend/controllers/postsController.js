@@ -15,13 +15,34 @@ class PostController {
         },
       });
       res
-        .status(200)
+        .status(201)
         .json({ success: true, message: "Successfully Create Post", data });
     } catch (error) {
       next(error);
     }
   }
-  static async updatePost(req, res, next) {}
+  static async updatePost(req, res, next) {
+    try {
+      const { image, caption, tags } = req.body;
+      const { id } = req.params;
+
+      await Post.update({ image, caption, tags }, { where: { id } });
+
+      const data = await Post.findByPk(id, {
+        include: {
+          association: "user",
+          attributes: ["name", "username", "email", "photo"],
+        },
+      });
+
+      if (!data) throw { name: "data_not_found" };
+      res
+        .status(200)
+        .json({ success: true, message: "Successfully Update Post", data });
+    } catch (error) {
+      next(error);
+    }
+  }
   static async deletePost(req, res, next) {}
   static async likePost(req, res, next) {}
   static async unlikePost(req, res, next) {}
