@@ -1,4 +1,5 @@
 const { Post, User, sequelize, UserLiked } = require("../models");
+const { Op } = require("sequelize");
 
 class PostController {
   static async createPost(req, res, next) {
@@ -90,7 +91,6 @@ class PostController {
       const { id } = req.params;
 
       const post = await Post.findByPk(id);
-      console.log(post);
       if (!post) throw { name: "data_not_found" };
       await Post.increment(
         { likes: -1 },
@@ -114,9 +114,74 @@ class PostController {
       next(error);
     }
   }
-  static async getList(req, res, next) {}
-  static async getListById(req, res, next) {}
-  static async getListByUserId(req, res, next) {}
+  static async getList(req, res, next) {
+    try {
+      const { page, limit, searchBy, search } = req.query;
+      let options = {
+        where: {},
+        limit,
+        offset: (page - 1) * limit,
+        include: [
+          {
+            model: User,
+            as: "user",
+            attributes: ["name", "username", "email", "photo"],
+          },
+        ],
+      };
+      if (searchBy && search) {
+        options.where[`${searchBy}`] = {
+          [Op.iLike]: search,
+        };
+      }
+
+      const listPost = await Post.findAndCountAll(options);
+      const pagination = {
+        total: listPost.rows.length,
+        page: +page,
+        limit: +limit,
+      };
+
+      res.status(200).json({
+        success: true,
+        message: "Successfully Get Post",
+        data: listPost.rows,
+        pagination,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+  static async getListById(req, res, next) {
+    try {
+      const { id } = req.params;
+
+      const data = await Post.findOne({
+        where: { id },
+        include: [
+          {
+            model: User,
+            as: "user",
+            attributes: ["name", "username", "email", "photo"],
+          },
+        ],
+      });
+
+      if (!data) throw { name: "data_not_found" };
+
+      res
+        .status(200)
+        .json({ success: true, message: "Successfully Get Post", data });
+    } catch (error) {
+      next(error);
+    }
+  }
+  static async getListByUserId(req, res, next) {
+    try {
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = PostController;
