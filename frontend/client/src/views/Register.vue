@@ -1,24 +1,45 @@
 <script>
-import { mapActions, mapState } from "pinia";
-import {usePostsStore} from '../stores/posts'
+import { mapActions } from "pinia";
+import {useUserStore} from '../stores/user'
 export default {
   data(){
     return {
-      image : '',
       name : '',
       username : '',
       email : '',
       password : '',
-      confirmPassword : ''
+      confirmPassword : '',
+      photo : null,
+      File: null, 
+      value: null, 
+      preview: null, 
+      isPic: false
     }
   },
   methods : {
-    ...mapActions(usePostsStore, ['upLoadFile']),
+    ...mapActions(useUserStore,['register']),
     async handleImage(e){
-      const uploadedImage = e.target.files[0]
-      this.convertToBase64(uploadedImage)
+      this.File = e.target.files[0];
+        this.photo = null;
+        this.isPic = false;
+        if (
+          this.File.name.includes(".png") ||
+          this.File.name.includes(".jpg") ||
+          this.File.name.includes(".jpeg")
+        ) {
+          this.isPic = true;
+        }
+      this.submitFile()
 
     },
+    async submitFile() {
+      const storage = await firebase.storage().ref().child(`${this.File.name}`);
+      const storageRef = await storage.put(this.File);
+        
+      storage.getDownloadURL().then((res) => {
+        this.photo = res
+      });
+      },
     convertToBase64(imageFile){
       const reader = new FileReader()
 
@@ -26,10 +47,7 @@ export default {
         this.image = e.target.result
       }
 
-      reader.readAsBinaryString(imageFile)
-      reader.onloadend = (e) => {
-        this.upLoadFile(this.image)
-      }
+      reader.readAsDataURL(imageFile)
     }
   }
 }
@@ -82,8 +100,10 @@ export default {
             />
           </div>
           <div class="mb-6">
-            <input @change="handleImage" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" type="file">
-
+            <input @change="handleImage" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" type="file" accept=".jpg,.jpeg,.png">
+          </div>
+          <div class="mb-6">
+            <img v-if="photo" :src="photo" style="width: 300px; height : 300px"/>
           </div>
           
 
@@ -93,8 +113,9 @@ export default {
             class="inline-block px-7 py-3 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full"
             data-mdb-ripple="true"
             data-mdb-ripple-color="light"
+            @click.prevent="register({photo,email,name,username,password})"
           >
-            Sign in
+            Register
           </button>
         </form>
         <div class="flex justify-center mt-4">
