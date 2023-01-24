@@ -12,8 +12,6 @@ export default {
       photo : null,
       File: null, 
       value: null, 
-      preview: null, 
-      isPic: false,
       processing : false,
     }
   },
