@@ -45,7 +45,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const isLoggedIn = localStorage.access_token ? true : false;
+  const isLoggedIn = localStorage.token ? true : false;
 
   if (to.name == "login" && isLoggedIn) {
     next("/");

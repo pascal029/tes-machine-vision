@@ -1,10 +1,10 @@
 <script>
 import { RouterView } from 'vue-router'
+import { mapWritableState } from 'pinia';
+import { useUserStore } from '../stores/user';
 export default {
-  data () {
-    return {
-      isLoggedIn : localStorage.access_token ? true : false
-    }
+  computed : {
+    ...mapWritableState(useUserStore,['isLoggedIn'])
   }
 }
 </script>
