@@ -13,42 +13,27 @@ export default {
       File: null, 
       value: null, 
       preview: null, 
-      isPic: false
+      isPic: false,
+      processing : false,
     }
   },
   methods : {
     ...mapActions(useUserStore,['register']),
-    async handleImage(e){
+    handleImage(e){
       this.File = e.target.files[0];
-        this.photo = null;
-        this.isPic = false;
-        if (
-          this.File.name.includes(".png") ||
-          this.File.name.includes(".jpg") ||
-          this.File.name.includes(".jpeg")
-        ) {
-          this.isPic = true;
-        }
       this.submitFile()
-
     },
     async submitFile() {
+
+      this.processing = 'trigerred'
       const storage = await firebase.storage().ref().child(`${this.File.name}`);
       const storageRef = await storage.put(this.File);
         
       storage.getDownloadURL().then((res) => {
         this.photo = res
+        this.processing = false
       });
-      },
-    convertToBase64(imageFile){
-      const reader = new FileReader()
-
-      reader.onload =(e) =>{
-        this.image = e.target.result
-      }
-
-      reader.readAsDataURL(imageFile)
-    }
+    },
   }
 }
 </script>
@@ -98,22 +83,22 @@ export default {
               placeholder="Confirm Password"
               v-model="confirmPassword"
             />
+            <p style="color : red" v-if="(this.password && this.confirmPassword) && this.password != this.confirmPassword">Password did not match</p>
+            <p style="color : green" v-if="(this.password && this.confirmPassword) && this.password == this.confirmPassword">Password match</p>
           </div>
           <div class="mb-6">
             <input @change="handleImage" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" type="file" accept=".jpg,.jpeg,.png">
           </div>
+          <div v-if="processing != false">processing, please wait ...</div>
           <div class="mb-6">
             <img v-if="photo" :src="photo" style="width: 300px; height : 300px"/>
           </div>
-          
-
-          <!-- Submit button -->
           <button
             type="submit"
             class="inline-block px-7 py-3 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full"
             data-mdb-ripple="true"
             data-mdb-ripple-color="light"
-            @click.prevent="register({photo,email,name,username,password})"
+            @click.prevent="register({photo,email,name,username,password, confirmPassword})"
           >
             Register
           </button>
