@@ -17,9 +17,9 @@ export default {
     methods : {
         ...mapActions(useUserStore, ['getUser']),
         handleImage(e){
-      this.File = e.target.files[0];
-      this.submitFile()
-    },
+          this.File = e.target.files[0];
+          this.submitFile()
+        },
     async submitFile() {
 
       this.processing = 'trigerred'

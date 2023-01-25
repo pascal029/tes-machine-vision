@@ -12,12 +12,12 @@ export default {
   data () {
     return {
       postUrl : false,
-      id : 0
+      id : 0,
     }
   },
   computed : {
     ...mapWritableState(useUserStore, ['showModal']),
-    ...mapWritableState(usePostsStore, ['postId'])
+    ...mapWritableState(usePostsStore, ['postId', 'showModalPosts', 'clickedFrom'])
   },
   created (){
     if(this.$route.path == '/post'){
@@ -26,9 +26,16 @@ export default {
     this.id = this.post.id
   },
   methods : {
+    ...mapActions(usePostsStore, ['getPost']),
     showDelete(){
       this.showModal = true
       this.postId = this.id
+    },
+    async showEdit(){
+      this.postId = this.id
+      await this.getPost(this.id)
+      this.clickedFrom = 'edit'
+      this.showModalPosts = true
     }
   }
 }
@@ -42,7 +49,7 @@ export default {
 
     <div class="flex justify-end w-full">
       <p class="font-bold">{{ post.user.username }}</p>
-      <button class="btn btn-primary btn-sm" v-if="postUrl">Edit</button>
+      <button class="btn btn-primary btn-sm" v-if="postUrl" @click.prevent="showEdit">Edit</button>
     </div>
     <div class="flex justify-end">
 
@@ -53,5 +60,5 @@ export default {
     <p class="text-blue-600">{{ post.tags }}</p>
   </div>
 </div>
-<Modal v-if="showModal"/>
+<Modal v-if="showModalPosts" />
 </template>

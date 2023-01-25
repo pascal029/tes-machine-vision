@@ -9,12 +9,13 @@ export default {
         ModalPost,
     },
     computed : {
-        ...mapWritableState(usePostsStore, ['showModalPosts', 'posts']),
+        ...mapWritableState(usePostsStore, ['showModalPosts', 'posts', 'clickedFrom']),
     },
     methods :{
         ...mapActions(usePostsStore, ['renderPost']),
         trigerredModal(){
-            this.showModal = true
+            this.clickedFrom = 'create'
+            this.showModalPosts = true
         }
     },
     async created (){
@@ -51,7 +52,7 @@ export default {
                 <img @click.prevent="trigerredModal" src="../assets/png-transparent-number-computer-icons-plus-miscellaneous-game-plus.png" style="height :50px;width:50px">
             </div>
         </div>
-        <ModalPost v-if="showModalPosts"/>
+        <ModalPost  v-if="showModalPosts"/>
     </div>
     
 </template>

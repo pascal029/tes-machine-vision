@@ -10,15 +10,17 @@ export const usePostsStore = defineStore("posts", {
     limit: 8,
     pagination: 0,
     postId: null,
+    post: {},
+    clickedFrom: "",
   }),
   actions: {
-    handleError(error) {
+    async handleError(error) {
       this.alert(error.response.data.message, "error");
       if (
         error.response.data.message == "Expired Token" ||
         error.response.data.message == "invalid token"
       ) {
-        localStorage.removeItem("token");
+        await localStorage.removeItem("token");
         this.isLoggedIn = false;
         this.router.push("/login");
       }
@@ -68,7 +70,6 @@ export const usePostsStore = defineStore("posts", {
           params: params,
         });
         this.posts = data.data;
-        console.log(data);
         this.router.push("/post");
       } catch (error) {
         this.handleError(error);
@@ -86,6 +87,35 @@ export const usePostsStore = defineStore("posts", {
         this.alert(data.message, "success");
       } catch (error) {
         this.handleError(error);
+      }
+    },
+    async getPost(id) {
+      try {
+        const { data } = await axios({
+          url: `${this.basedUrl}/post/${id}`,
+          headers: {
+            Authorization: "Bearer " + localStorage.token,
+          },
+        });
+        this.post = data.data;
+      } catch (error) {
+        this.handleError(error.response.data.message, "error");
+      }
+    },
+    async editPost(dataEdit) {
+      try {
+        const { data } = await axios({
+          url: `${this.basedUrl}/post/${dataEdit.id}`,
+          method: "put",
+          data: dataEdit,
+          headers: {
+            Authorization: "Bearer " + localStorage.token,
+          },
+        });
+        this.alert(data.message, "success");
+        await this.renderPost({ page: 1, limit: 8 });
+      } catch (error) {
+        this.handleError(error.response.data.message, "error");
       }
     },
   },
