@@ -56,7 +56,7 @@ router.beforeEach((to, from, next) => {
   } else if (
     (to.name == "home" ||
       to.name == "post" ||
-      to.name == "post" ||
+      to.name == "user" ||
       to.name == "changepassword") &&
     !isLoggedIn
   ) {
