@@ -9,21 +9,18 @@ export default {
     data(){
         return {
             File : null,
-            disabled : 0,
         }
     },
     computed : {
-        ...mapWritableState(useUserStore, ['user', 'showModal'])
+        ...mapWritableState(useUserStore, ['user', 'showModal', 'disabled'])
     },
     methods : {
         ...mapActions(useUserStore, ['getUser']),
         handleImage(e){
       this.File = e.target.files[0];
-      console.log('trigerred')
       this.submitFile()
     },
     async submitFile() {
-        console.log(this.user.photo)
 
       this.processing = 'trigerred'
       const storage = await firebase.storage().ref().child(`${this.File.name}`);
@@ -32,7 +29,6 @@ export default {
       storage.getDownloadURL().then((res) => {
         this.user.photo = res
         this.processing = false
-        console.log(this.user.photo)
       });
     },
     },
@@ -44,9 +40,10 @@ export default {
 </script>
 
 <template>
-    <div class="p-32">
-        <div class="flex flex-col gap-4 w-80">
-            <div>Detail User</div>
+    <div class="container px-6 py-12 h-full">
+    <div class="flex justify-center flex-wrap h-full g-6 text-gray-800">
+      <div class="md:w-8/12 lg:w-5/12 lg:ml-20 mt-10">
+            <div class="flex justify-center mb-8 font-bold">Detail User</div>
             
             <form>
                 <div class="flex flex-col gap-6 ">
@@ -65,10 +62,10 @@ export default {
                 <div class="mb-6">
                 <input :disabled="disabled == 0" @change="handleImage" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" type="file" accept=".jpg,.jpeg,.png">
               </div>
-                <div>
-                    <img :src="user.photo" style="width: 300px; height : 300px"/>
+                <div class="flex justify-center place-items-center">
+                    <img :src="user.photo" style="width: 250px; height : 250px"/>
                 </div>
-                <div class="flex gap-10 ml-10 pl-5">
+                <div class="flex gap-10 ml-10 pl-5 justify-center place-items-center">
                     <button @click.prevent="disabled == 0 ? disabled +=1 : disabled -= 1" class="btn btn-primary">{{disabled == 0 ? 'EDIT' : 'CANCEL'}}</button>
                     <button @click.prevent="showModal = true" :disabled="disabled == 0" for="my-modal" class="btn">SUBMIT</button>
 
@@ -77,6 +74,7 @@ export default {
             </form>
 
         
+        </div>
         </div>
     </div>
     <Modal v-if="showModal"/>

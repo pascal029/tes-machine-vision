@@ -9,7 +9,6 @@ const authentication = async (req, res, next) => {
     let token = authorization.split(" ")[1];
 
     const isValidToken = verify(token);
-    console.log(isValidToken);
     if (isValidToken.name == "JsonWebTokenError") {
       throw { name: "invalid_token" };
     } else if (isValidToken.name == "TokenExpiredError") {

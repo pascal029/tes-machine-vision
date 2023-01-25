@@ -2,6 +2,7 @@
     import { useUserStore } from '../stores/user'
     import { mapWritableState, mapActions } from 'pinia'
     export default {
+        props : ['password', 'confirmNewPassword', 'newPassword'],
         methods : {
             ...mapActions(useUserStore, ['updateUser', 'updatePassword']),
             closeModal(){
@@ -9,13 +10,17 @@
             },
             async submitData(){
                 if(this.$route.path == '/user'){
-                    await this.updateUser(this.user)
-                    this.showModal = false
+                  await this.updateUser(this.user)
+                } else if( this.$route.path == '/change-password'){
+                  const passwordData = {oldPassword : this.password, newPassword : this.newPassword, confirmNewPassword : this.confirmNewPassword}
+                  await this.updatePassword(passwordData)
                 }
+                this.showModal = false
+                this.disabled = 0
             }
         },
         computed : {
-                ...mapWritableState(useUserStore, ['showModal', 'user'])
+                ...mapWritableState(useUserStore, ['showModal', 'user', 'disabled'])
         },
     }
 

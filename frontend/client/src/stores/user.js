@@ -6,17 +6,20 @@ export const useUserStore = defineStore("user", {
     basedUrl: `http://localhost:3000`,
     isLoggedIn: localStorage.token ? true : false,
     user: {},
-    headers: {
-      Authorization: "Bearer " + localStorage.token,
-    },
     showModal: false,
+    disabled: 0,
   }),
   actions: {
     handleError(error) {
-      this.alert(error.response.data.message);
-      localStorage.removeItem("token");
-      this.isLoggedIn = false;
-      this.router.push("/login");
+      this.alert(error.response.data.message, "error");
+      if (
+        error.response.data.message == "Expired Token" ||
+        error.response.data.message == "invalid token"
+      ) {
+        localStorage.removeItem("token");
+        this.isLoggedIn = false;
+        this.router.push("/login");
+      }
     },
     alert(message, status) {
       Swal.fire({
@@ -66,11 +69,12 @@ export const useUserStore = defineStore("user", {
       }
     },
     async getUser() {
-      console.log(this.headers);
       try {
         const { data } = await axios({
           url: `${this.basedUrl}/user`,
-          headers: this.headers,
+          headers: {
+            Authorization: "Bearer " + localStorage.token,
+          },
         });
         this.user = data.data;
       } catch (error) {
@@ -82,7 +86,9 @@ export const useUserStore = defineStore("user", {
         const { data } = await axios({
           url: this.basedUrl + "/user",
           method: "put",
-          headers: this.headers,
+          headers: {
+            Authorization: "Bearer " + localStorage.token,
+          },
           data: updateData,
         });
         this.user = data.data;
@@ -96,9 +102,12 @@ export const useUserStore = defineStore("user", {
         const { data } = await axios({
           url: this.basedUrl + "/user/change-password",
           method: "put",
-          headers: this.headers,
+          headers: {
+            Authorization: "Bearer " + localStorage.token,
+          },
           data: passwordData,
         });
+        this.alert(data.message, "success");
       } catch (error) {
         this.handleError(error);
       }
