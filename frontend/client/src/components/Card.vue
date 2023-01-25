@@ -46,8 +46,9 @@ export default {
     <div class="card w-64 bg-base-100 shadow-xl mx-2 my-2">
   <figure><img :src="post.image" alt="Shoes" style="height:150px;width=150px" /></figure>
   <div class="card-body">
-
+    <p class="font-bole">{{ post.likes }} likes</p>
     <div class="flex justify-end w-full">
+      
       <p class="font-bold">{{ post.user.username }}</p>
       <button class="btn btn-primary btn-sm" v-if="postUrl" @click.prevent="showEdit">Edit</button>
     </div>

@@ -12,6 +12,7 @@ export const usePostsStore = defineStore("posts", {
     postId: null,
     post: {},
     clickedFrom: "",
+    pagination: {},
   }),
   actions: {
     async handleError(error) {
@@ -46,9 +47,9 @@ export const usePostsStore = defineStore("posts", {
           },
           params: params,
         });
-        this.posts = await data.data;
-        this.router.push("/");
-        console.log(data);
+
+        this.pagination = data.pagination;
+        this.posts = data.data;
       } catch (error) {
         this.handleError(error);
       }
@@ -62,6 +63,7 @@ export const usePostsStore = defineStore("posts", {
           },
         });
         const id = user.data.data.id;
+
         const { data } = await axios({
           url: `${this.basedUrl}/post/user/${id}`,
           headers: {
@@ -70,7 +72,8 @@ export const usePostsStore = defineStore("posts", {
           params: params,
         });
         this.posts = data.data;
-        this.router.push("/post");
+        this.pagination = data.pagination;
+        console.log(this.posts, this.pagination, `from store`);
       } catch (error) {
         this.handleError(error);
       }

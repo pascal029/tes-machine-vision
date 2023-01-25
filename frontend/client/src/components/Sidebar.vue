@@ -11,9 +11,12 @@ export default {
     ...mapActions(usePostsStore, ['renderHome', 'renderPost']),
     async goToHome (){
       await this.renderHome({page : 1, limit : 8})
+      this.$router.push("/");
     },
     async goToPost (){
       await this.renderPost({page : 1, limit : 8})
+
+      this.$router.push("/post");
     }
   }
 }
