@@ -9,6 +9,7 @@ export const usePostsStore = defineStore("posts", {
     page: 1,
     limit: 8,
     pagination: 0,
+    postId: null,
   }),
   actions: {
     handleError(error) {
@@ -47,7 +48,7 @@ export const usePostsStore = defineStore("posts", {
         this.router.push("/");
         console.log(data);
       } catch (error) {
-        console.log(error);
+        this.handleError(error);
       }
     },
     async renderPost(params) {
@@ -70,7 +71,21 @@ export const usePostsStore = defineStore("posts", {
         console.log(data);
         this.router.push("/post");
       } catch (error) {
-        console.log(error);
+        this.handleError(error);
+      }
+    },
+    async deletePost(id) {
+      try {
+        const { data } = await axios({
+          url: `${this.basedUrl}/post/${id.id}`,
+          method: "delete",
+          headers: {
+            Authorization: "Bearer " + localStorage.token,
+          },
+        });
+        this.alert(data.message, "success");
+      } catch (error) {
+        this.handleError(error);
       }
     },
   },

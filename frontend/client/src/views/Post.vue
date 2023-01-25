@@ -36,7 +36,7 @@ export default {
         </form>
         <div class="flex flex-wrap ">
             <p v-if="posts.length < 1"> no data available</p>
-            <Card v-for="post in posts" :key="post.id" :post="post"/>
+            <Card v-for="(post, idx) in posts" :key="idx" :post="post"/>
         </div>
         <div class="flex justify-center justify-between">
             <div></div>

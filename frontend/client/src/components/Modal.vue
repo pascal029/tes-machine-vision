@@ -1,5 +1,6 @@
 <script>
     import { useUserStore } from '../stores/user'
+    import { usePostsStore } from '../stores/posts'
     import { mapWritableState, mapActions } from 'pinia'
     export default {
       data(){
@@ -13,6 +14,7 @@
         props : ['password', 'confirmNewPassword', 'newPassword'],
         methods : {
             ...mapActions(useUserStore, ['updateUser', 'updatePassword']),
+            ...mapActions(usePostsStore, ['deletePost', 'renderPost']),
             closeModal(){
                 this.showModal = false
             },
@@ -22,13 +24,17 @@
                 } else if( this.$route.path == '/change-password'){
                   const passwordData = {oldPassword : this.password, newPassword : this.newPassword, confirmNewPassword : this.confirmNewPassword}
                   await this.updatePassword(passwordData)
+                } else if(this.$route.path == '/post'){
+                  await this.deletePost({id : this.postId})
+                  await this.renderPost({page : 1, limit : 8})
                 }
                 this.showModal = false
                 this.disabled = 0
             }
         },
         computed : {
-                ...mapWritableState(useUserStore, ['showModal', 'user', 'disabled'])
+            ...mapWritableState(useUserStore, ['showModal', 'user', 'disabled']),
+            ...mapWritableState(usePostsStore, ['postId'])
         },
     }
 

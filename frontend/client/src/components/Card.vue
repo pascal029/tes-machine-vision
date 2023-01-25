@@ -3,6 +3,7 @@ import { mapActions ,mapWritableState} from 'pinia';
 import Modal from '../components/Modal.vue';
 
 import { useUserStore } from '../stores/user';
+import { usePostsStore } from '../stores/posts';
 export default {
   components : {
     Modal
@@ -10,21 +11,24 @@ export default {
   props : ['post'],
   data () {
     return {
-      postUrl : false
+      postUrl : false,
+      id : 0
     }
   },
   computed : {
-    ...mapWritableState(useUserStore, ['showModal'])
+    ...mapWritableState(useUserStore, ['showModal']),
+    ...mapWritableState(usePostsStore, ['postId'])
   },
   created (){
     if(this.$route.path == '/post'){
       this.postUrl = true
     }
+    this.id = this.post.id
   },
   methods : {
     showDelete(){
-      console.log('ketriger')
       this.showModal = true
+      this.postId = this.id
     }
   }
 }
