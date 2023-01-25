@@ -124,3 +124,5 @@ OR
   "data": null
 }
 ```
+
+## 3. POST /auth/logout

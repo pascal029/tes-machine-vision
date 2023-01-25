@@ -8,15 +8,19 @@ export default {
     ...mapWritableState(useUserStore,['isLoggedIn' ])
   },
   methods : {
-    ...mapActions(usePostsStore, ['renderHome', 'renderPost']),
+    ...mapActions(usePostsStore, ['renderHome', 'renderPost', ]),
+    ...mapActions(useUserStore, ['logout']),
     async goToHome (){
       await this.renderHome({page : 1, limit : 8})
       this.$router.push("/");
     },
     async goToPost (){
       await this.renderPost({page : 1, limit : 8})
-
       this.$router.push("/post");
+    },
+    async handleLogout(){
+      await this.logout()
+      this.$router.push("/login");
     }
   }
 }
@@ -48,7 +52,7 @@ export default {
           <div class="flex justify-center place-items-end w-full">
             <div class="border border-1 w-full flex flex-row justify-center">
               <img src="../assets/logout.png" style="height:1em;margin-top:1%;margin-right:2%"/>
-              <button>Logout</button>
+              <button @click.prevent="handleLogout">Logout</button>
             </div>
           </div>
         </ul>

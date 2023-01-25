@@ -68,6 +68,22 @@ export const useUserStore = defineStore("user", {
         this.alert(error.response.data.message, "error");
       }
     },
+    async logout() {
+      try {
+        const { data } = await axios({
+          url: this.basedUrl + "/auth/logout",
+          method: "post",
+          headers: {
+            Authorization: "Bearer " + localStorage.token,
+          },
+        });
+        await localStorage.removeItem("token");
+        this.isLoggedIn = false;
+        this.alert(data.message, "success");
+      } catch (error) {
+        this.handleError(error.response.data.message);
+      }
+    },
     async getUser() {
       try {
         const { data } = await axios({
