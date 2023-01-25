@@ -2,19 +2,23 @@
 import Card from '../components/Card.vue';
 import ModalPost from '../components/ModalPost.vue';
 import {usePostsStore} from '../stores/posts'
-import { mapWritableState } from 'pinia';
+import { mapWritableState, mapActions } from 'pinia';
 export default {
     components : {
         Card,
         ModalPost
     },
     computed : {
-        ...mapWritableState(usePostsStore, ['showModal'])
+        ...mapWritableState(usePostsStore, ['showModal', 'posts'])
     },
     methods :{
+        ...mapActions(usePostsStore, ['renderPost']),
         trigerredModal(){
             this.showModal = true
         }
+    },
+    async created (){
+        this.renderPost({page : 1, limit : 8})
     }
 }
 </script>
@@ -31,6 +35,8 @@ export default {
             </div>
         </form>
         <div class="flex flex-wrap ">
+            <p v-if="posts.length < 1"> no data available</p>
+            <Card v-for="post in posts" :key="post.id" :post="post"/>
         </div>
         <div class="flex justify-center justify-between">
             <div></div>

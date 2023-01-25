@@ -6,6 +6,7 @@ class UserController {
       const { id } = req.user;
       const user = await User.findByPk(id, {
         attributes: [
+          "id",
           "name",
           "username",
           "email",

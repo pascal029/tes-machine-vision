@@ -58,7 +58,16 @@ export const usePostsStore = defineStore("posts", {
             Authorization: "Bearer " + localStorage.token,
           },
         });
-        console.log(user.data.data);
+        const id = user.data.data.id;
+        const { data } = await axios({
+          url: `${this.basedUrl}/post/user/${id}`,
+          headers: {
+            Authorization: "Bearer " + localStorage.token,
+          },
+          params: params,
+        });
+        this.posts = data.data;
+        console.log(data);
         this.router.push("/post");
       } catch (error) {
         console.log(error);

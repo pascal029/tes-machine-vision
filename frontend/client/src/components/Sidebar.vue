@@ -13,7 +13,7 @@ export default {
       await this.renderHome({page : 1, limit : 8})
     },
     async goToPost (){
-      await this.renderPost()
+      await this.renderPost({page : 1, limit : 8})
     }
   }
 }

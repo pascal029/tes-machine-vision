@@ -30,6 +30,7 @@ export default {
             </div>
         </form>
         <div class="flex flex-wrap ">
+            <p v-if="posts.length < 1"> no data available</p>
             <Card v-for="post in posts" :key="post.id" :post="post"/>
         </div>
 
