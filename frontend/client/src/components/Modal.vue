@@ -2,6 +2,14 @@
     import { useUserStore } from '../stores/user'
     import { mapWritableState, mapActions } from 'pinia'
     export default {
+      data(){
+        return {
+          route : ''
+        }
+      },
+      async created(){
+        if(this.$route.path == '/post') this.route = 'post'
+      },
         props : ['password', 'confirmNewPassword', 'newPassword'],
         methods : {
             ...mapActions(useUserStore, ['updateUser', 'updatePassword']),
@@ -35,7 +43,7 @@
           <!--body-->
           <div class="relative p-6 flex-auto">
             <p class="my-4 text-slate-500 text-lg leading-relaxed">
-                Are you sure you want to update this data ?
+                Are you sure you want to {{ this.route == 'post' ? 'delete' : 'update' }} this data ?
             </p>
           </div>
           <!--footer-->

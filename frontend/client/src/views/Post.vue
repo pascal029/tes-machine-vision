@@ -6,10 +6,10 @@ import { mapWritableState, mapActions } from 'pinia';
 export default {
     components : {
         Card,
-        ModalPost
+        ModalPost,
     },
     computed : {
-        ...mapWritableState(usePostsStore, ['showModal', 'posts'])
+        ...mapWritableState(usePostsStore, ['showModalPosts', 'posts']),
     },
     methods :{
         ...mapActions(usePostsStore, ['renderPost']),
@@ -51,7 +51,7 @@ export default {
                 <img @click.prevent="trigerredModal" src="../assets/png-transparent-number-computer-icons-plus-miscellaneous-game-plus.png" style="height :50px;width:50px">
             </div>
         </div>
-        <ModalPost v-if="showModal"/>
+        <ModalPost v-if="showModalPosts"/>
     </div>
     
 </template>

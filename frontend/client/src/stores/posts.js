@@ -4,7 +4,7 @@ import axios from "axios";
 export const usePostsStore = defineStore("posts", {
   state: () => ({
     basedUrl: `http://localhost:3000`,
-    showModal: false,
+    showModalPosts: false,
     posts: [],
     page: 1,
     limit: 8,
