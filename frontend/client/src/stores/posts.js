@@ -6,5 +6,9 @@ export const usePostsStore = defineStore("posts", {
     baseUrl: `http://localhost:3000`,
     showModal: false,
   }),
-  actions: {},
+  actions: {
+    async renderHome() {
+      const { data } = await axios({});
+    },
+  },
 });
