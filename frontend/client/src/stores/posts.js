@@ -118,5 +118,21 @@ export const usePostsStore = defineStore("posts", {
         this.handleError(error.response.data.message, "error");
       }
     },
+    async createPost(dataCreate) {
+      try {
+        const { data } = await axios({
+          url: this.basedUrl + "/post",
+          method: "post",
+          headers: {
+            Authorization: "Bearer " + localStorage.token,
+          },
+          data: dataCreate,
+        });
+        this.alert(data.message, "success");
+        await this.renderPost({ page: 1, limit: 8 });
+      } catch (error) {
+        this.handleError(error.response.data.message, "error");
+      }
+    },
   },
 });

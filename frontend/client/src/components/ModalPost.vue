@@ -12,7 +12,7 @@ export default{
     }
   },
   methods : {
-    ...mapActions(usePostsStore, ['editPost']),
+    ...mapActions(usePostsStore, ['editPost', 'createPost']),
     handleImage(e){
       this.File = e.target.files[0];
       this.submitFile()
@@ -31,13 +31,17 @@ export default{
       this.showModalPosts = false
     },
     async submitData(){
-      const data = {
-        id : this.postId,
+      let data = {
         image : this.image,
         tags : this.tags,
         caption : this.caption
       }
-      await this.editPost(data)
+      if(this.clickedFrom == 'edit'){
+        data.id = this.postId
+        await this.editPost(data)
+      } else {
+        await this.createPost(data)
+      }
       this.showModalPosts = false
     }
   },
