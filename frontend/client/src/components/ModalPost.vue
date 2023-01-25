@@ -53,7 +53,6 @@ export default{
       this.caption = this.post.caption,
       this.image = this.post.image,
       this.tags = this.post.tags
-      console.log(this.caption, this.image, this.tags)
     }
   }
 }

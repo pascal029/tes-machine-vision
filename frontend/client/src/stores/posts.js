@@ -73,7 +73,6 @@ export const usePostsStore = defineStore("posts", {
         });
         this.posts = data.data;
         this.pagination = data.pagination;
-        console.log(this.posts, this.pagination, `from store`);
       } catch (error) {
         this.handleError(error);
       }

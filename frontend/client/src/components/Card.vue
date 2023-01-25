@@ -61,5 +61,5 @@ export default {
     <p class="text-blue-600">{{ post.tags }}</p>
   </div>
 </div>
-<Modal v-if="showModalPosts" />
+<Modal v-if="showModal" />
 </template>
