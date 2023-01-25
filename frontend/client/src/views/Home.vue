@@ -1,14 +1,25 @@
 <script>
 import Card from '../components/Card.vue';
+import { usePostsStore } from '../stores/posts';
+import { mapWritableState, mapActions } from 'pinia';
 export default {
     components : {
         Card
+    },
+    computed : {
+        ...mapWritableState(usePostsStore, ['posts', 'page', 'limit', 'posts'])
+    },
+    async created(){
+        await this.renderHome({page : this.page, limit : this.limit})
+    },
+    methods : {
+        ...mapActions(usePostsStore, ['renderHome'])
     }
 }
 </script>
 
 <template>
-    <div class="px-16 py-10 h-screen w-full flex flex-col justify-between">
+    <div class="px-16 py-10 h-screen w-f    ull flex flex-col justify-between">
         <form>   
             <label for="search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
             <div class="relative">
@@ -19,12 +30,12 @@ export default {
             </div>
         </form>
         <div class="flex flex-wrap ">
-            <Card /><Card /><Card /><Card /><Card />
+            <Card v-for="post in posts" :key="post.id" :post="post"/>
         </div>
 
         <div class="flex justify-center"><div class="btn-group">
-            <button class="btn">«</button>
-            <button class="btn">Page 22</button>
+            <button class="btn" v-if="page > 1">«</button>
+            <button class="btn">{{this.page}}</button>
             <button class="btn">»</button>
         </div></div>
         

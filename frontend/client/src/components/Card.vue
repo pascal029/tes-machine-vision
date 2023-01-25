@@ -1,9 +1,18 @@
+<script>
+export default {
+  props : ['post']
+}
+
+</script>
+
 <template>
     <div class="card w-64 bg-base-100 shadow-xl mx-2 my-2">
-  <figure><img src="https://placeimg.com/400/225/arch" alt="Shoes" /></figure>
+  <figure><img :src="post.image" alt="Shoes" /></figure>
   <div class="card-body">
-    <h2 class="card-title">Shoes!</h2>
-    <p>If a dog chews shoes whose shoes does he choose?</p>
+
+    <p class="font-bold">{{ post.user.username }}</p>
+    <p>{{ post.caption }}</p>
+    <p class="text-blue-600">{{ post.tags }}</p>
   </div>
 </div>
 </template>

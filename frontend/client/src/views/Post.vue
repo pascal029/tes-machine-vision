@@ -31,7 +31,6 @@ export default {
             </div>
         </form>
         <div class="flex flex-wrap ">
-            <Card /><Card /><Card /><Card />
         </div>
         <div class="flex justify-center justify-between">
             <div></div>

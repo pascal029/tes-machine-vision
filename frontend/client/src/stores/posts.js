@@ -3,12 +3,66 @@ import axios from "axios";
 
 export const usePostsStore = defineStore("posts", {
   state: () => ({
-    baseUrl: `http://localhost:3000`,
+    basedUrl: `http://localhost:3000`,
     showModal: false,
+    posts: [],
+    page: 1,
+    limit: 8,
+    pagination: 0,
   }),
   actions: {
-    async renderHome() {
-      const { data } = await axios({});
+    handleError(error) {
+      this.alert(error.response.data.message, "error");
+      if (
+        error.response.data.message == "Expired Token" ||
+        error.response.data.message == "invalid token"
+      ) {
+        localStorage.removeItem("token");
+        this.isLoggedIn = false;
+        this.router.push("/login");
+      }
+    },
+    alert(message, status) {
+      Swal.fire({
+        position: "top-end",
+        icon: status,
+        title: message,
+        toast: true,
+        timerProgressBar: true,
+        showConfirmButton: false,
+        timer: 2000,
+        showCloseButton: true,
+      });
+    },
+    async renderHome(params) {
+      try {
+        const { data } = await axios({
+          url: this.basedUrl + "/post",
+          headers: {
+            Authorization: "Bearer " + localStorage.token,
+          },
+          params: params,
+        });
+        this.posts = await data.data;
+        this.router.push("/");
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async renderPost(params) {
+      try {
+        const user = await axios({
+          url: `${this.basedUrl}/user`,
+          headers: {
+            Authorization: "Bearer " + localStorage.token,
+          },
+        });
+        console.log(user.data.data);
+        this.router.push("/post");
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
 });

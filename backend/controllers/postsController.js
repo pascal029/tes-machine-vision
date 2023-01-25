@@ -137,7 +137,7 @@ class PostController {
 
       const listPost = await Post.findAndCountAll(options);
       const pagination = {
-        total: listPost.rows.length,
+        total: listPost.count,
         page: +page,
         limit: +limit,
       };
