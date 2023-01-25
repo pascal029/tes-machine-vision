@@ -3,8 +3,18 @@ import { RouterView } from 'vue-router'
 import { mapWritableState } from 'pinia';
 import { useUserStore } from '../stores/user';
 export default {
+  data(){
+    return {
+      isActive : true
+    }
+  },
   computed : {
     ...mapWritableState(useUserStore,['isLoggedIn'])
+  },
+  methods : {
+    activeClass(e){
+      this.isActive = !this.isActive
+    }
   }
 }
 </script>
@@ -24,29 +34,32 @@ export default {
       </div> 
       <div class="drawer-side border border-1" v-if="isLoggedIn == true">
         <label for="my-drawer-2" class="drawer-overlay"></label> 
-        <ul class="menu p-4 w-80 bg-base-100 gap-2 place-items-center text-base-content m-0">
+        <ul class="menu w-80 bg-base-100 gap-2 place-items-center text-base-content m-0 h-screen flex place-content-between">
           <!-- Sidebar content here -->
-          <div class="border border-1 w-full flex justify-center">
-            <RouterLink to="/">Home</RouterLink>
+          <div class="border border-1 w-full flex flex-col w-full ">
+            <router-link to="/" class="flex justify-center border border-1" active-class="active"><img src="../assets/icons8-home-page-50.png" style="height:1.7em"/></router-link>
+            <router-link to="/user" class="flex justify-center border border-1" active-class="active">User</router-link>
+            <router-link to="/change-password" class="flex justify-center border border-1" active-class="active">Change Password</router-link>
+            <router-link to="/post" class="flex justify-center border border-1" active-class="active">Post</router-link>
           </div>
-          <div class="border border-1 w-full flex justify-center">
-            <RouterLink to="/user">User</RouterLink>
+          <div class="flex justify-center place-items-end w-full">
+            <div class="border border-1 w-full flex flex-row justify-center">
+              <img src="../assets/logout.png" style="height:1em;margin-top:1%;margin-right:2%"/>
+              <button>Logout</button>
+            </div>
           </div>
-          <div class="border border-1 w-full flex justify-center">
-            <RouterLink to="/change-password">Change Password</RouterLink>
-          </div>
-          <div class="border border-1 w-full flex justify-center">
-            <RouterLink to="/post">Post</RouterLink>
-          </div>
-
-          
         </ul>
-        <div class="flex justify-center place-items-end ">
-          <div class="border border-1 w-full flex justify-center">
-
-            <button>Logout</button>
-          </div>
-        </div>
+        
       </div>
     </div>
 </template>
+
+<style scoped>
+
+.active {
+  background-color: skyblue;
+}
+
+.exact-active-link {
+    font-weight: bold;
+}</style>
